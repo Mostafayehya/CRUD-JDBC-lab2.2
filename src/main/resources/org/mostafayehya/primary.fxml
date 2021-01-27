@@ -19,7 +19,6 @@
                   <Label text="First name" />
                   <Label text="Last Name" />
                   <Label text="Email" />
-                  <Label text="zip code" />
                </children>
             </VBox>
             <VBox prefHeight="281.0" prefWidth="192.0" spacing="20.0">
@@ -28,7 +27,6 @@
                   <TextField fx:id="firstNameTextField" alignment="TOP_LEFT" prefHeight="25.0" prefWidth="382.0" />
                   <TextField fx:id="lastNameTextField" alignment="TOP_LEFT" prefHeight="25.0" prefWidth="372.0" />
                   <TextField fx:id="emailTextField" alignment="TOP_LEFT" prefHeight="25.0" prefWidth="372.0" />
-                  <TextField fx:id="zipTextField" alignment="TOP_LEFT" prefHeight="25.0" prefWidth="372.0" />
                </children>
             </VBox>
          </children>
@@ -40,6 +38,7 @@
             <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#deleteRow" text="Delete" />
             <Button fx:id="firstButton" mnemonicParsing="false" onAction="#getFirstRow" text="First" />
             <Button fx:id="previousButton" mnemonicParsing="false" onAction="#getPreviousRow" text="Previous" />
+            <Button fx:id="nextButton" mnemonicParsing="false" onAction="#nextRow" text="Next" />
             <Button fx:id="lastButton" mnemonicParsing="false" onAction="#getLastRow" text="Last" />
          </children>
       </HBox>

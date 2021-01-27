@@ -45,13 +45,39 @@ public class PrimaryController implements Initializable {
     }
 
     public void getFirstRow(ActionEvent actionEvent) {
-        DataLoaderService.testDataSource();
+
+        Customer customer = DataLoaderService.fetchFirst();
+
+        idTextField.setText(String.valueOf(customer.customer_id));
+        firstNameTextField.setText(customer.firstName);
+        lastNameTextField.setText(customer.lastName);
+        emailTextField.setText(customer.email);
+
 
     }
 
     public void getPreviousRow(ActionEvent actionEvent) {
+        Customer customer = DataLoaderService.fetchPrevious();
+        idTextField.setText(String.valueOf(customer.customer_id));
+        firstNameTextField.setText(customer.firstName);
+        lastNameTextField.setText(customer.lastName);
+        emailTextField.setText(customer.email);
     }
 
     public void getLastRow(ActionEvent actionEvent) {
+        Customer customer = DataLoaderService.fetchLast();
+        idTextField.setText(String.valueOf(customer.customer_id));
+        firstNameTextField.setText(customer.firstName);
+        lastNameTextField.setText(customer.lastName);
+        emailTextField.setText(customer.email);
+    }
+
+    public void nextRow(ActionEvent actionEvent) {
+
+        Customer customer = DataLoaderService.fetchNext();
+        idTextField.setText(String.valueOf(customer.customer_id));
+        firstNameTextField.setText(customer.firstName);
+        lastNameTextField.setText(customer.lastName);
+        emailTextField.setText(customer.email);
     }
 }
