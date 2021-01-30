@@ -2,8 +2,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.mostafayehya</groupId>
-    <artifactId>CRUD-JDBC-lab2.2</artifactId>
+    <artifactId>CRUD-JDBC-lab2.1</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
