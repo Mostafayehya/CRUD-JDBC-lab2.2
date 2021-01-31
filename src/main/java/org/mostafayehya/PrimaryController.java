@@ -1,6 +1,5 @@
 package org.mostafayehya;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -13,40 +12,74 @@ import javafx.scene.control.TextField;
 
 public class PrimaryController implements Initializable {
 
-    public TextField middleTextField;
-    public TextField firstNameTextField;
-    public TextField lastNameTextField;
-    public TextField phoneTextField;
-    public TextField emailTextField;
-    public Button newButton;
-    public Button updateButton;
-    public Button deleteButton;
-    public Button firstButton;
-    public Button previousButton;
-    public Button lastButton;
-    public TextField zipTextField;
-    public Label statusLable;
     @FXML
     private TextField idTextField;
+
+    @FXML
+    private TextField firstNameTextField;
+
+    @FXML
+    private TextField lastNameTextField;
+
+    @FXML
+    private TextField sexTextField1;
+
+    @FXML
+    private TextField ageTextField;
+
+    @FXML
+    private TextField addressTextField;
+
+    @FXML
+    private TextField phoneTextField1;
+
+    @FXML
+    private TextField balanceTextField11;
+
+    @FXML
+    private Label statusLable;
+
+    @FXML
+    private Button newButton;
+
+    @FXML
+    private Button updateButton;
+
+    @FXML
+    private Button deleteButton;
+
+    @FXML
+    private Button firstButton;
+
+    @FXML
+    private Button previousButton;
+
+    @FXML
+    private Button nextButton;
+
+    @FXML
+    private Button lastButton;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
     }
 
-    @FXML
-    private void switchToSecondary() throws IOException {
-    }
-
     public void createNew(ActionEvent actionEvent) {
 
-        Customer customer = new Customer(Integer.valueOf(idTextField.getText()), firstNameTextField.getText(), lastNameTextField.getText(), emailTextField.getText());
-        customer = DataLoaderService.createRow(customer);
+        Employee employee = new Employee(Integer.parseInt(idTextField.getText()), firstNameTextField.getText(),
+                lastNameTextField.getText(), sexTextField1.getText(), Integer.parseInt(ageTextField.getText()),
+                addressTextField.getText(), Integer.parseInt(phoneTextField1.getText()), Integer.parseInt(balanceTextField11.getText()));
+        employee = DataLoaderService.createRow(employee);
 
-        if (customer != null) {
+        if (employee != null) {
             idTextField.clear();
             firstNameTextField.clear();
             lastNameTextField.clear();
-            emailTextField.clear();
+            sexTextField1.clear();
+            ageTextField.clear();
+            addressTextField.clear();
+            phoneTextField1.clear();
+            balanceTextField11.clear();
             statusLable.setText("Row Added !");
             statusLable.setVisible(true);
 
@@ -60,14 +93,20 @@ public class PrimaryController implements Initializable {
     }
 
     public void updateRow(ActionEvent actionEvent) {
-        Customer customer = new Customer(Integer.valueOf(idTextField.getText()), firstNameTextField.getText(), lastNameTextField.getText(), emailTextField.getText());
-        customer = DataLoaderService.updateRow(customer);
+        Employee employee = new Employee(Integer.parseInt(idTextField.getText()), firstNameTextField.getText(),
+                lastNameTextField.getText(), sexTextField1.getText(), Integer.parseInt(ageTextField.getText()),
+                addressTextField.getText(), Integer.parseInt(phoneTextField1.getText()), Integer.parseInt(balanceTextField11.getText()));
+        employee = DataLoaderService.updateRow(employee);
 
-        if (customer != null) {
-            idTextField.setText(String.valueOf(customer.customer_id));
-            firstNameTextField.setText(customer.firstName);
-            lastNameTextField.setText(customer.lastName);
-            emailTextField.setText(customer.email);
+        if (employee != null) {
+            idTextField.setText(String.valueOf(employee.employee_id));
+            firstNameTextField.setText(employee.firstName);
+            lastNameTextField.setText(employee.lastName);
+            sexTextField1.setText(employee.sex);
+            ageTextField.setText(String.valueOf(employee.age));
+            addressTextField.setText(employee.address);
+            phoneTextField1.setText(String.valueOf(employee.phoneNumber));
+            balanceTextField11.setText(String.valueOf(employee.vacationBalance));
             statusLable.setText("Row updated !");
             statusLable.setVisible(true);
 
@@ -82,10 +121,19 @@ public class PrimaryController implements Initializable {
     }
 
     public void deleteRow(ActionEvent actionEvent) {
+        statusLable.setVisible(true);
 
-        if(DataLoaderService.deleteRow()){
+        if (DataLoaderService.deleteRow()) {
+            idTextField.clear();
+            firstNameTextField.clear();
+            lastNameTextField.clear();
+            sexTextField1.clear();
+            ageTextField.clear();
+            addressTextField.clear();
+            phoneTextField1.clear();
+            balanceTextField11.clear();
             statusLable.setText("Row Deleted!");
-        }else {
+        } else {
             statusLable.setVisible(false);
             statusLable.setText("Can't delete row");
         }
@@ -93,38 +141,58 @@ public class PrimaryController implements Initializable {
 
     public void getFirstRow(ActionEvent actionEvent) {
 
-        Customer customer = DataLoaderService.fetchFirst();
+        Employee employee = DataLoaderService.fetchFirst();
 
-        idTextField.setText(String.valueOf(customer.customer_id));
-        firstNameTextField.setText(customer.firstName);
-        lastNameTextField.setText(customer.lastName);
-        emailTextField.setText(customer.email);
-
+        idTextField.setText(String.valueOf(employee.employee_id));
+        firstNameTextField.setText(employee.firstName);
+        lastNameTextField.setText(employee.lastName);
+        sexTextField1.setText(employee.sex);
+        ageTextField.setText(String.valueOf(employee.age));
+        addressTextField.setText(employee.address);
+        phoneTextField1.setText(String.valueOf(employee.phoneNumber));
+        balanceTextField11.setText(String.valueOf(employee.vacationBalance));
 
     }
 
     public void getPreviousRow(ActionEvent actionEvent) {
-        Customer customer = DataLoaderService.fetchPrevious();
-        idTextField.setText(String.valueOf(customer.customer_id));
-        firstNameTextField.setText(customer.firstName);
-        lastNameTextField.setText(customer.lastName);
-        emailTextField.setText(customer.email);
+        Employee employee = DataLoaderService.fetchPrevious();
+        if (employee.employee_id > 0) {
+            idTextField.setText(String.valueOf(employee.employee_id));
+            firstNameTextField.setText(employee.firstName);
+            lastNameTextField.setText(employee.lastName);
+            sexTextField1.setText(employee.sex);
+            ageTextField.setText(String.valueOf(employee.age));
+            addressTextField.setText(employee.address);
+            phoneTextField1.setText(String.valueOf(employee.phoneNumber));
+            balanceTextField11.setText(String.valueOf(employee.vacationBalance));
+        }
+
     }
 
     public void getLastRow(ActionEvent actionEvent) {
-        Customer customer = DataLoaderService.fetchLast();
-        idTextField.setText(String.valueOf(customer.customer_id));
-        firstNameTextField.setText(customer.firstName);
-        lastNameTextField.setText(customer.lastName);
-        emailTextField.setText(customer.email);
+        Employee employee = DataLoaderService.fetchLast();
+        idTextField.setText(String.valueOf(employee.employee_id));
+        firstNameTextField.setText(employee.firstName);
+        lastNameTextField.setText(employee.lastName);
+        sexTextField1.setText(employee.sex);
+        ageTextField.setText(String.valueOf(employee.age));
+        addressTextField.setText(employee.address);
+        phoneTextField1.setText(String.valueOf(employee.phoneNumber));
+        balanceTextField11.setText(String.valueOf(employee.vacationBalance));
     }
 
     public void nextRow(ActionEvent actionEvent) {
 
-        Customer customer = DataLoaderService.fetchNext();
-        idTextField.setText(String.valueOf(customer.customer_id));
-        firstNameTextField.setText(customer.firstName);
-        lastNameTextField.setText(customer.lastName);
-        emailTextField.setText(customer.email);
+        Employee employee = DataLoaderService.fetchNext();
+        if (employee.employee_id > 0) {
+            idTextField.setText(String.valueOf(employee.employee_id));
+            firstNameTextField.setText(employee.firstName);
+            lastNameTextField.setText(employee.lastName);
+            sexTextField1.setText(employee.sex);
+            ageTextField.setText(String.valueOf(employee.age));
+            addressTextField.setText(employee.address);
+            phoneTextField1.setText(String.valueOf(employee.phoneNumber));
+            balanceTextField11.setText(String.valueOf(employee.vacationBalance));
+        }
     }
 }

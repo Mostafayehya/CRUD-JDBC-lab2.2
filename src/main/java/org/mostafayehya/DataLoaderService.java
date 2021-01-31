@@ -1,10 +1,7 @@
 package org.mostafayehya;
 
 import javax.sql.DataSource;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.sql.*;
-import java.util.Properties;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
 
@@ -20,22 +17,15 @@ public class DataLoaderService {
     }
 
     public static DataSource getDataSource() {
-        FileInputStream fis = null;
-        Properties properties = new Properties();
-        MysqlDataSource mysqlDataSource = null;
 
-        try {
-            fis = new FileInputStream("src/main/resources/db.properties");
-            properties.load(fis);
-            mysqlDataSource = new MysqlDataSource();
+        MysqlDataSource mysqlDataSource = new MysqlDataSource();
 
-            mysqlDataSource.setURL(properties.getProperty("MYSQL_URL"));
-            mysqlDataSource.setUser(properties.getProperty("MYSQL_USERNAME"));
-            mysqlDataSource.setPassword(properties.getProperty("MYSQL_PASSWORD"));
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        mysqlDataSource.setURL("jdbc:mysql://localhost:3306/sakila");
+        mysqlDataSource.setUser("root");
+        mysqlDataSource.setPassword("root");
+
+
         return mysqlDataSource;
 
     }
@@ -44,7 +34,7 @@ public class DataLoaderService {
         try {
             dataSource = getDataSource();
             connection = dataSource.getConnection();
-            preparedStatement = connection.prepareStatement("select * from customer", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            preparedStatement = connection.prepareStatement("select * from employee", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             resultSet = preparedStatement.executeQuery();
 
         } catch (SQLException e) {
@@ -52,20 +42,22 @@ public class DataLoaderService {
         }
     }
 
-    public static Customer createRow(Customer customer) {
+    public static Employee createRow(Employee employee) {
 
         try {
             resultSet.moveToInsertRow();
-            resultSet.updateInt("customer_id", customer.customer_id);
-            resultSet.updateString("first_name", customer.firstName);
-            resultSet.updateString("last_name", customer.lastName);
-            resultSet.updateString("email", customer.email);
-            resultSet.updateString("store_id", "2");
-            resultSet.updateString("address_id", "2");
-            resultSet.updateDate("create_date", new Date(System.currentTimeMillis()));
-            resultSet.updateDate("last_update", new Date(System.currentTimeMillis()));
+            resultSet.updateInt("Id", employee.employee_id);
+            resultSet.updateString("F_Name", employee.firstName);
+            resultSet.updateString("L_NAME", employee.lastName);
+            resultSet.updateString("Sex", employee.sex);
+            resultSet.updateInt("Age", employee.age);
+            resultSet.updateString("Address", employee.address);
+            resultSet.updateInt("Phone_Number", employee.phoneNumber);
+            resultSet.updateInt("Vacation_Balance", employee.vacationBalance);
+
             resultSet.insertRow();
-            return new Customer(resultSet.getInt(1), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5));
+            return new Employee(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),resultSet.getString(4),
+                    resultSet.getInt(5) ,resultSet.getString(6),resultSet.getInt(7),resultSet.getInt(8));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -74,24 +66,20 @@ public class DataLoaderService {
         return null;
     }
 
-    public static Customer updateRow(Customer customer) {
+    public static Employee updateRow(Employee employee) {
 
         try {
-            String store_id = resultSet.getString("store_id");
-            String address_id = resultSet.getString("address_id");
-            Date create_date = resultSet.getDate("create_date");
-            Date last_update = resultSet.getDate("last_update");
-
-            resultSet.updateInt("customer_id", customer.customer_id);
-            resultSet.updateString("first_name", customer.firstName);
-            resultSet.updateString("last_name", customer.lastName);
-            resultSet.updateString("email", customer.email);
-            resultSet.updateString("store_id", store_id);
-            resultSet.updateString("address_id", address_id);
-            resultSet.updateDate("create_date", create_date);
-            resultSet.updateDate("last_update", last_update);
+            resultSet.updateInt("Id", employee.employee_id);
+            resultSet.updateString("F_Name", employee.firstName);
+            resultSet.updateString("L_NAME", employee.lastName);
+            resultSet.updateString("Sex", employee.sex);
+            resultSet.updateInt("Age", employee.age);
+            resultSet.updateString("Address", employee.address);
+            resultSet.updateInt("Phone_Number", employee.phoneNumber);
+            resultSet.updateInt("Vacation_Balance", employee.vacationBalance);
             resultSet.updateRow();
-            return new Customer(resultSet.getInt(1), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5));
+            return new Employee(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),resultSet.getString(4),
+                    resultSet.getInt(5) ,resultSet.getString(6),resultSet.getInt(7),resultSet.getInt(8));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -105,67 +93,71 @@ public class DataLoaderService {
 
         try {
              resultSet.deleteRow();
-             return resultSet.rowDeleted();
+             return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
 
-    public static Customer fetchFirst() {
+    public static Employee fetchFirst() {
 
-        Customer customer;
+        Employee employee;
         try {
             if (resultSet.first()) {
-                customer = new Customer(resultSet.getInt(1), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5));
-                return customer;
+                employee = new Employee(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),resultSet.getString(4),
+                        resultSet.getInt(5) ,resultSet.getString(6),resultSet.getInt(7),resultSet.getInt(8));
+                return employee;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return new Customer();
+        return new Employee();
     }
 
-    public static Customer fetchLast() {
+    public static Employee fetchLast() {
 
-        Customer customer;
+        Employee employee;
         try {
             if (resultSet.last()) {
-                customer = new Customer(resultSet.getInt(1), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5));
-                return customer;
+                employee =  new Employee(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),resultSet.getString(4),
+                        resultSet.getInt(5) ,resultSet.getString(6),resultSet.getInt(7),resultSet.getInt(8));
+                return employee;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return new Customer();
+        return new Employee();
     }
 
-    public static Customer fetchNext() {
+    public static Employee fetchNext() {
 
-        Customer customer;
+        Employee employee;
         try {
-            if (resultSet.next()) {
-                customer = new Customer(resultSet.getInt(1), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5));
-                return customer;
+            if (resultSet.next() && !resultSet.isAfterLast()) {
+                employee =  new Employee(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),resultSet.getString(4),
+                        resultSet.getInt(5) ,resultSet.getString(6),resultSet.getInt(7),resultSet.getInt(8));
+                return employee;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return new Customer();
+        return new Employee();
     }
 
-    public static Customer fetchPrevious() {
+    public static Employee fetchPrevious() {
 
-        Customer customer;
+        Employee employee;
         try {
             if (resultSet.previous()) {
-                customer = new Customer(resultSet.getInt(1), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5));
-                return customer;
+                employee =  new Employee(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),resultSet.getString(4),
+                        resultSet.getInt(5) ,resultSet.getString(6),resultSet.getInt(7),resultSet.getInt(8));
+                return employee;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return new Customer();
+        return new Employee();
     }
 
 
