@@ -1,6 +1,7 @@
 package org.mostafayehya;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javafx.event.ActionEvent;
@@ -96,17 +97,10 @@ public class PrimaryController implements Initializable {
         Employee employee = new Employee(Integer.parseInt(idTextField.getText()), firstNameTextField.getText(),
                 lastNameTextField.getText(), sexTextField1.getText(), Integer.parseInt(ageTextField.getText()),
                 addressTextField.getText(), Integer.parseInt(phoneTextField1.getText()), Integer.parseInt(balanceTextField11.getText()));
-        employee = DataLoaderService.updateRow(employee);
+        Optional<Employee> result = DataLoaderService.updateRow(employee);
 
-        if (employee != null) {
-            idTextField.setText(String.valueOf(employee.employee_id));
-            firstNameTextField.setText(employee.firstName);
-            lastNameTextField.setText(employee.lastName);
-            sexTextField1.setText(employee.sex);
-            ageTextField.setText(String.valueOf(employee.age));
-            addressTextField.setText(employee.address);
-            phoneTextField1.setText(String.valueOf(employee.phoneNumber));
-            balanceTextField11.setText(String.valueOf(employee.vacationBalance));
+        if (result.isPresent()) {
+            updateUI(result.get());
             statusLable.setText("Row updated !");
             statusLable.setVisible(true);
 
@@ -140,22 +134,18 @@ public class PrimaryController implements Initializable {
     }
 
     public void getFirstRow(ActionEvent actionEvent) {
-
         Employee employee = DataLoaderService.fetchFirst();
-
-        idTextField.setText(String.valueOf(employee.employee_id));
-        firstNameTextField.setText(employee.firstName);
-        lastNameTextField.setText(employee.lastName);
-        sexTextField1.setText(employee.sex);
-        ageTextField.setText(String.valueOf(employee.age));
-        addressTextField.setText(employee.address);
-        phoneTextField1.setText(String.valueOf(employee.phoneNumber));
-        balanceTextField11.setText(String.valueOf(employee.vacationBalance));
-
+        updateUI(employee);
     }
 
     public void getPreviousRow(ActionEvent actionEvent) {
-        Employee employee = DataLoaderService.fetchPrevious();
+        Optional<Employee> employee = DataLoaderService.fetchPrevious();
+        if (employee.isPresent())
+            updateUI(employee.get());
+
+    }
+
+    private void updateUI(Employee employee) {
         if (employee.employee_id > 0) {
             idTextField.setText(String.valueOf(employee.employee_id));
             firstNameTextField.setText(employee.firstName);
@@ -166,33 +156,17 @@ public class PrimaryController implements Initializable {
             phoneTextField1.setText(String.valueOf(employee.phoneNumber));
             balanceTextField11.setText(String.valueOf(employee.vacationBalance));
         }
-
     }
 
     public void getLastRow(ActionEvent actionEvent) {
-        Employee employee = DataLoaderService.fetchLast();
-        idTextField.setText(String.valueOf(employee.employee_id));
-        firstNameTextField.setText(employee.firstName);
-        lastNameTextField.setText(employee.lastName);
-        sexTextField1.setText(employee.sex);
-        ageTextField.setText(String.valueOf(employee.age));
-        addressTextField.setText(employee.address);
-        phoneTextField1.setText(String.valueOf(employee.phoneNumber));
-        balanceTextField11.setText(String.valueOf(employee.vacationBalance));
+        Optional<Employee> employee = DataLoaderService.fetchLast();
+        if (employee.isPresent())
+            updateUI(employee.get());
     }
 
     public void nextRow(ActionEvent actionEvent) {
 
         Employee employee = DataLoaderService.fetchNext();
-        if (employee.employee_id > 0) {
-            idTextField.setText(String.valueOf(employee.employee_id));
-            firstNameTextField.setText(employee.firstName);
-            lastNameTextField.setText(employee.lastName);
-            sexTextField1.setText(employee.sex);
-            ageTextField.setText(String.valueOf(employee.age));
-            addressTextField.setText(employee.address);
-            phoneTextField1.setText(String.valueOf(employee.phoneNumber));
-            balanceTextField11.setText(String.valueOf(employee.vacationBalance));
-        }
+        updateUI(employee);
     }
 }

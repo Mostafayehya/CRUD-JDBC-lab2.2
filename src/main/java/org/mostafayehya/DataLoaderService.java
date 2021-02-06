@@ -2,6 +2,7 @@ package org.mostafayehya;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.Optional;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
 
@@ -24,7 +25,6 @@ public class DataLoaderService {
         mysqlDataSource.setURL("jdbc:mysql://localhost:3306/sakila");
         mysqlDataSource.setUser("root");
         mysqlDataSource.setPassword("root");
-
 
         return mysqlDataSource;
 
@@ -56,8 +56,8 @@ public class DataLoaderService {
             resultSet.updateInt("Vacation_Balance", employee.vacationBalance);
 
             resultSet.insertRow();
-            return new Employee(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),resultSet.getString(4),
-                    resultSet.getInt(5) ,resultSet.getString(6),resultSet.getInt(7),resultSet.getInt(8));
+            return new Employee(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
+                    resultSet.getInt(5), resultSet.getString(6), resultSet.getInt(7), resultSet.getInt(8));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -66,7 +66,7 @@ public class DataLoaderService {
         return null;
     }
 
-    public static Employee updateRow(Employee employee) {
+    public static Optional<Employee> updateRow(Employee employee) {
 
         try {
             resultSet.updateInt("Id", employee.employee_id);
@@ -78,22 +78,22 @@ public class DataLoaderService {
             resultSet.updateInt("Phone_Number", employee.phoneNumber);
             resultSet.updateInt("Vacation_Balance", employee.vacationBalance);
             resultSet.updateRow();
-            return new Employee(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),resultSet.getString(4),
-                    resultSet.getInt(5) ,resultSet.getString(6),resultSet.getInt(7),resultSet.getInt(8));
+            return Optional.of(new Employee(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
+                    resultSet.getInt(5), resultSet.getString(6), resultSet.getInt(7), resultSet.getInt(8)));
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return null;
+        return Optional.empty();
 
     }
 
     public static Boolean deleteRow() {
 
         try {
-             resultSet.deleteRow();
-             return true;
+            resultSet.deleteRow();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -105,8 +105,8 @@ public class DataLoaderService {
         Employee employee;
         try {
             if (resultSet.first()) {
-                employee = new Employee(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),resultSet.getString(4),
-                        resultSet.getInt(5) ,resultSet.getString(6),resultSet.getInt(7),resultSet.getInt(8));
+                employee = new Employee(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
+                        resultSet.getInt(5), resultSet.getString(6), resultSet.getInt(7), resultSet.getInt(8));
                 return employee;
             }
         } catch (SQLException e) {
@@ -115,28 +115,28 @@ public class DataLoaderService {
         return new Employee();
     }
 
-    public static Employee fetchLast() {
+    public static Optional<Employee> fetchLast() {
 
         Employee employee;
         try {
             if (resultSet.last()) {
-                employee =  new Employee(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),resultSet.getString(4),
-                        resultSet.getInt(5) ,resultSet.getString(6),resultSet.getInt(7),resultSet.getInt(8));
-                return employee;
+                employee = new Employee(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
+                        resultSet.getInt(5), resultSet.getString(6), resultSet.getInt(7), resultSet.getInt(8));
+                return Optional.of(employee);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return new Employee();
+        return Optional.empty();
     }
 
     public static Employee fetchNext() {
 
         Employee employee;
         try {
-            if (resultSet.next() && !resultSet.isAfterLast()) {
-                employee =  new Employee(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),resultSet.getString(4),
-                        resultSet.getInt(5) ,resultSet.getString(6),resultSet.getInt(7),resultSet.getInt(8));
+            if (!resultSet.isLast()&& resultSet.next() ) {
+                employee = new Employee(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
+                        resultSet.getInt(5), resultSet.getString(6), resultSet.getInt(7), resultSet.getInt(8));
                 return employee;
             }
         } catch (SQLException e) {
@@ -145,19 +145,20 @@ public class DataLoaderService {
         return new Employee();
     }
 
-    public static Employee fetchPrevious() {
+    public static Optional<Employee> fetchPrevious() {
+
 
         Employee employee;
         try {
-            if (resultSet.previous()) {
-                employee =  new Employee(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),resultSet.getString(4),
-                        resultSet.getInt(5) ,resultSet.getString(6),resultSet.getInt(7),resultSet.getInt(8));
-                return employee;
+            if (!resultSet.isFirst() && resultSet.previous()) {
+                employee = new Employee(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
+                        resultSet.getInt(5), resultSet.getString(6), resultSet.getInt(7), resultSet.getInt(8));
+                return Optional.of(employee);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return new Employee();
+        return Optional.empty();
     }
 
 
