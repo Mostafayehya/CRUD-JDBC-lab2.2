@@ -1,12 +1,14 @@
-package org.mostafayehya;
+package org.mostafayehya.server;
 
 import javax.sql.DataSource;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
 import java.util.Optional;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
 
-public class DataLoaderService {
+public class EmployeeServiceImpl extends UnicastRemoteObject implements EmployeeService {
 
     static DataSource dataSource = null;
     static Connection connection = null;
@@ -14,8 +16,13 @@ public class DataLoaderService {
     static ResultSet resultSet = null;
 
     static {
-        fetchData();
+        loadAllEmployees();
     }
+
+    public EmployeeServiceImpl() throws RemoteException {
+        super();
+    }
+
 
     public static DataSource getDataSource() {
 
@@ -30,7 +37,7 @@ public class DataLoaderService {
 
     }
 
-    public static void fetchData() {
+    public static void loadAllEmployees() {
         try {
             dataSource = getDataSource();
             connection = dataSource.getConnection();
@@ -42,7 +49,8 @@ public class DataLoaderService {
         }
     }
 
-    public static Employee createRow(Employee employee) {
+    @Override
+    public Employee createEmployee(Employee employee) {
 
         try {
             resultSet.moveToInsertRow();
@@ -66,7 +74,8 @@ public class DataLoaderService {
         return null;
     }
 
-    public static Optional<Employee> updateRow(Employee employee) {
+    @Override
+    public Employee updateEmployee(Employee employee) {
 
         try {
             resultSet.updateInt("Id", employee.employee_id);
@@ -78,18 +87,19 @@ public class DataLoaderService {
             resultSet.updateInt("Phone_Number", employee.phoneNumber);
             resultSet.updateInt("Vacation_Balance", employee.vacationBalance);
             resultSet.updateRow();
-            return Optional.of(new Employee(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
-                    resultSet.getInt(5), resultSet.getString(6), resultSet.getInt(7), resultSet.getInt(8)));
+            return new Employee(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
+                    resultSet.getInt(5), resultSet.getString(6), resultSet.getInt(7), resultSet.getInt(8));
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return Optional.empty();
+        return null;
 
     }
 
-    public static Boolean deleteRow() {
+    @Override
+    public Boolean deleteEmployee() {
 
         try {
             resultSet.deleteRow();
@@ -100,7 +110,8 @@ public class DataLoaderService {
         return false;
     }
 
-    public static Employee fetchFirst() {
+    @Override
+    public Employee getFirstEmployee() {
 
         Employee employee;
         try {
@@ -112,29 +123,15 @@ public class DataLoaderService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return new Employee();
+        return null;
     }
 
-    public static Optional<Employee> fetchLast() {
+    @Override
+    public Employee getLastEmployee() {
 
         Employee employee;
         try {
             if (resultSet.last()) {
-                employee = new Employee(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
-                        resultSet.getInt(5), resultSet.getString(6), resultSet.getInt(7), resultSet.getInt(8));
-                return Optional.of(employee);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return Optional.empty();
-    }
-
-    public static Employee fetchNext() {
-
-        Employee employee;
-        try {
-            if (!resultSet.isLast()&& resultSet.next() ) {
                 employee = new Employee(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
                         resultSet.getInt(5), resultSet.getString(6), resultSet.getInt(7), resultSet.getInt(8));
                 return employee;
@@ -142,10 +139,27 @@ public class DataLoaderService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return new Employee();
+        return null;
     }
 
-    public static Optional<Employee> fetchPrevious() {
+    @Override
+    public Employee getNextEmployee() {
+
+        Employee employee;
+        try {
+            if (!resultSet.isLast() && resultSet.next()) {
+                employee = new Employee(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
+                        resultSet.getInt(5), resultSet.getString(6), resultSet.getInt(7), resultSet.getInt(8));
+                return employee;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public Employee getPreviousEmployee() {
 
 
         Employee employee;
@@ -153,12 +167,12 @@ public class DataLoaderService {
             if (!resultSet.isFirst() && resultSet.previous()) {
                 employee = new Employee(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
                         resultSet.getInt(5), resultSet.getString(6), resultSet.getInt(7), resultSet.getInt(8));
-                return Optional.of(employee);
+                return employee;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return Optional.empty();
+        return null;
     }
 
 

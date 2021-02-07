@@ -1,4 +1,4 @@
-package org.mostafayehya;
+package org.mostafayehya.client;
 
 import java.net.URL;
 import java.util.Optional;
@@ -10,6 +10,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import org.mostafayehya.server.Employee;
 
 public class PrimaryController implements Initializable {
 
@@ -61,8 +62,11 @@ public class PrimaryController implements Initializable {
     @FXML
     private Button lastButton;
 
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+
     }
 
     public void createNew(ActionEvent actionEvent) {
@@ -70,9 +74,9 @@ public class PrimaryController implements Initializable {
         Employee employee = new Employee(Integer.parseInt(idTextField.getText()), firstNameTextField.getText(),
                 lastNameTextField.getText(), sexTextField1.getText(), Integer.parseInt(ageTextField.getText()),
                 addressTextField.getText(), Integer.parseInt(phoneTextField1.getText()), Integer.parseInt(balanceTextField11.getText()));
-        employee = DataLoaderService.createRow(employee);
+        Employee result = RMIDBClient.createEmployee(employee);
 
-        if (employee != null) {
+        if (result != null) {
             idTextField.clear();
             firstNameTextField.clear();
             lastNameTextField.clear();
@@ -89,7 +93,6 @@ public class PrimaryController implements Initializable {
             statusLable.setText("Coulnd't add data");
             statusLable.setVisible(true);
 
-
         }
     }
 
@@ -97,10 +100,10 @@ public class PrimaryController implements Initializable {
         Employee employee = new Employee(Integer.parseInt(idTextField.getText()), firstNameTextField.getText(),
                 lastNameTextField.getText(), sexTextField1.getText(), Integer.parseInt(ageTextField.getText()),
                 addressTextField.getText(), Integer.parseInt(phoneTextField1.getText()), Integer.parseInt(balanceTextField11.getText()));
-        Optional<Employee> result = DataLoaderService.updateRow(employee);
+        Employee result = RMIDBClient.updateEmployee(employee);
 
-        if (result.isPresent()) {
-            updateUI(result.get());
+        if (result != null) {
+            updateUI(result);
             statusLable.setText("Row updated !");
             statusLable.setVisible(true);
 
@@ -117,7 +120,9 @@ public class PrimaryController implements Initializable {
     public void deleteRow(ActionEvent actionEvent) {
         statusLable.setVisible(true);
 
-        if (DataLoaderService.deleteRow()) {
+        Boolean result = RMIDBClient.deleteEmployee();
+
+        if (result) {
             idTextField.clear();
             firstNameTextField.clear();
             lastNameTextField.clear();
@@ -134,15 +139,15 @@ public class PrimaryController implements Initializable {
     }
 
     public void getFirstRow(ActionEvent actionEvent) {
-        Employee employee = DataLoaderService.fetchFirst();
-        updateUI(employee);
+        Employee employee = RMIDBClient.getFirstEmployee();
+        if (employee != null)
+            updateUI(employee);
     }
 
     public void getPreviousRow(ActionEvent actionEvent) {
-        Optional<Employee> employee = DataLoaderService.fetchPrevious();
-        if (employee.isPresent())
-            updateUI(employee.get());
-
+        Employee employee = RMIDBClient.getPreviousEmployee();
+        if (employee != null)
+            updateUI(employee);
     }
 
     private void updateUI(Employee employee) {
@@ -159,14 +164,16 @@ public class PrimaryController implements Initializable {
     }
 
     public void getLastRow(ActionEvent actionEvent) {
-        Optional<Employee> employee = DataLoaderService.fetchLast();
-        if (employee.isPresent())
-            updateUI(employee.get());
+        Employee employee = RMIDBClient.getLastEmployee();
+        if (employee != null)
+            updateUI(employee);
     }
 
     public void nextRow(ActionEvent actionEvent) {
 
-        Employee employee = DataLoaderService.fetchNext();
-        updateUI(employee);
+        Employee employee = RMIDBClient.getNextEmployee();
+        if (employee != null)
+            updateUI(employee);
+
     }
 }

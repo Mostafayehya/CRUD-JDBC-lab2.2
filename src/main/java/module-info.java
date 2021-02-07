@@ -4,7 +4,10 @@ module org.mostafayehya {
     requires java.sql;
     requires mysql.connector.java;
     requires java.naming;
+    requires java.rmi;
 
-    opens org.mostafayehya to javafx.fxml;
-    exports org.mostafayehya;
+    opens org.mostafayehya.client to javafx.fxml;
+
+    exports org.mostafayehya.client;
+    exports org.mostafayehya.server;
 }

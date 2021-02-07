@@ -1,6 +1,8 @@
-package org.mostafayehya;
+package org.mostafayehya.server;
 
-public class Employee {
+import java.io.Serializable;
+
+public class Employee implements Serializable {
 
     public int employee_id;
     public String firstName;
