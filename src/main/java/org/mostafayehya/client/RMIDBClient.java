@@ -22,7 +22,7 @@ import java.util.Optional;
 /**
  * JavaFX App
  */
-public class RMIDBClient extends Application {
+public class RMIDBClient extends Application{
 
     private static Scene scene;
     private static EmployeeService employeeService;
@@ -50,9 +50,6 @@ public class RMIDBClient extends Application {
         EmployeeServiceImpl.releaseResources();
     }
 
-    static void setRoot(String fxml) throws IOException {
-        scene.setRoot(loadFXML(fxml));
-    }
 
     private static Parent loadFXML(String fxml) throws IOException {
 
